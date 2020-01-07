@@ -110,19 +110,46 @@ I was incautious enough to tell him about the Yalta, he insisted on visiting me 
 Then he wanted to see the garden again, this time more thoroughly. In the tennis court, he asked how large the grounds belonging to the house were. Fräulein Rosy was embarrassed, for she didn’t know; he was already measuring the tennis court with his paces, the length and the width, he had already computed the number of square meters, blurted it out, and: reflected a bit. He compared the size of the tennis court with the size of the garden and also with the size of the adjacent meadow, made a shrewd face, and told us how big the lot was. Fräulein Rosy was overwhelmed, the visit, which I had so feared, was a triumph. For the early evening, he took me to a performance in the Waldtheater over the Dolder. When I came home, the ladies were waiting for me in their room. Fräulein Mima couldn’t forgive herself for being away, for an hour I heard them sing Grandfather’s praises. He had even figured out the size of the grounds correctly, a true sorcerer.
 '''
 
+txt = """
+This hall is choked with corpses. The bodies of orcs and ogres lie in tangled heaps where they died, and the floor is sticky with dried blood. It looks like the orcs and ogres were fighting. Some side was the victor but you're not sure which one. The bodies are largely stripped of valuables, but a few broken weapons jut from the slain or lie discarded on the floor.
+A cluster of low crates surrounds a barrel in the center of this chamber. Atop the barrel lies a stack of copper coins and two stacks of cards, one face up. Meanwhile, atop each crate rests a fan of five face-down playing cards. A thin layer of dust covers everything. Clearly someone meant to return to their game of cards.
+Neither light nor darkvision can penetrate the gloom in this chamber. An unnatural shade fills it, and the room's farthest reaches are barely visible. Near the room's center, you can just barely perceive a lump about the size of a human lying on the floor. (It might be a dead body, a pile of rags, or a sleeping monster that can take advantage of the room's darkness.)
+You round the corner to see a ghastly scene. A semitranslucent figure hangs in the air, studded with crossbow bolts and with blood pouring from every wound. It reaches toward you in a pleading gesture, points to the walls on either side of the room, and then vanishes. Once it has gone, you notice small holes in the walls, each just large enough for a bolt to pass through.
+"""
 
-mk = MarkovDict()
+import requests as rq
+from bs4 import BeautifulSoup
+
+url = 'https://www.thievesguild.cc/generators/dungeon-room-generator'
+
+descriptions = []
+
+for i in range(5):
+    page = rq.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    div = soup.find('div',{"class": "box"})
+    print(div.text.strip())
+    descriptions.append(div.text + '\n')
+
+def main():
+
+    mk = MarkovDict()
+
+    gen = mk.random_set(140,
+            mk.make_model(
+                mk.process_text(txt)
+            )
+
+        )
+
+    print(gen)
 
 # mk.random_set(140,
-#     mk.make_model(
-#         mk.process_text(corpus)
+#     mk.make_high_order_model(
+#         mk.process_text(txt),
+#         3
 #     )
-
 # )
 
-mk.random_set(140,
-    mk.make_high_order_model(
-        mk.process_text(corpus),
-        3
-    )
-)
+if __name__ == "__main__":
+    main()
