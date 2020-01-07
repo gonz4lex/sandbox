@@ -128,8 +128,11 @@ for i in range(5):
     page = rq.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
     div = soup.find('div',{"class": "box"})
-    print(div.text.strip())
-    descriptions.append(div.text + '\n')
+    text = div.text.strip()
+    # remove dm notes
+    text = text.split(" DM Note:", 1)[0]
+    print(text)
+    descriptions.append(text)
 
 def main():
 
